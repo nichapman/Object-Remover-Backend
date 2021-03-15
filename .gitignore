@@ -1,1 +1,5 @@
 places_model/*
+__pycache__/*
+input.png
+mask.png
+output.png

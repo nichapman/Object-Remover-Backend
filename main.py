@@ -15,7 +15,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 @app.route('/process', methods=["GET", "POST"])
 @cross_origin()
-def inpaint():
+def process():
     #load in json containing input images
     data = request.get_data()
     data_object = json.loads(data)
