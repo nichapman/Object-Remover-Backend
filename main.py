@@ -3,8 +3,10 @@ from flask import send_file, request
 from flask_cors import CORS, cross_origin
 import json
 import base64
-import test
+import inpaint
 import os
+
+IMAGE_DATA_PREFIX_LENGTH = 22;
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
@@ -14,21 +16,28 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 @app.route('/process', methods=["GET", "POST"])
 @cross_origin()
 def inpaint():
+    #load in json containing input images
     data = request.get_data()
-    y = json.loads(data)
-    image = y["image"][22:]
-    mask = y["mask"][22:]
+    data_object = json.loads(data)
     
-    imgdata = base64.b64decode(image)
+    #trim unnecessary prefix
+    image = data_object["image"][IMAGE_DATA_PREFIX_LENGTH:]
+    mask = data_object["mask"][IMAGE_DATA_PREFIX_LENGTH:]
+    
+    #save the image input locally
+    image_data = base64.b64decode(image)
     with open('input.png', 'wb') as f:
-        f.write(imgdata)
+        f.write(image_data)
             
-    imgdata = base64.b64decode(mask)
+    #save the mask input locally
+    mask_data = base64.b64decode(mask)
     with open('mask.png', 'wb') as f:
-        f.write(imgdata)
+        f.write(mask_data)
        
-    test.inpaint("input.png", "mask.png", "output.png", "places_model/")
+    #call inpainting script with input images and path to model, save to output.png
+    inpaint.process("input.png", "mask.png", "output.png", "places_model/")
     
+    #return processed output image
     return send_file("output.png", mimetype='image/PNG')
     
 app.run(host= '0.0.0.0', port=11000)

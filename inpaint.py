@@ -1,12 +1,12 @@
 import argparse
+import cv2
+import numpy as np
+import tensorflow as tf
+tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
-import cv2 
-import numpy as np 
-import tensorflow as tf 
-tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR) 
 from inpaint_model import InpaintCAModel
 
-def inpaint(image, mask, output_path, checkpoint_dir):    
+def process(image, mask, output_path, checkpoint_dir):    
     model = InpaintCAModel()
     image = cv2.imread(image)
     mask = cv2.imread(mask)
@@ -23,7 +23,6 @@ def inpaint(image, mask, output_path, checkpoint_dir):
     mask = np.expand_dims(mask, 0)
     input_image = np.concatenate([image, mask], axis=2)
 
-    #gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.7)
     sess_config = tf.ConfigProto()
     sess_config.gpu_options.allow_growth = True
     with tf.Session(config=sess_config) as sess:
