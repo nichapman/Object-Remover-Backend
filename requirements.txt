@@ -1,0 +1,7 @@
+Flask==1.1.2
+Flask-Cors==3.0.10
+scipy
+opencv-python==4.5.1.48
+tensorflow-gpu==1.15.0
+neuralgym @ git+https://github.com/JiahuiYu/neuralgym
+PyYAML==5.4.1
